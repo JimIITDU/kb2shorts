@@ -10,6 +10,8 @@ from pathlib import Path
 
 import yaml
 
+from pipeline.ingest import run_ingest, IngestError
+
 STAGES = ["ingest", "script", "tts", "align", "assets", "captions", "render", "qa", "package"]
 
 
@@ -64,12 +66,31 @@ def cmd_generate(args):
 
     print(f"Job ID: {job_id}")
     print(f"Job dir: {job_dir}")
+
+    if status["ingest"] != "done":
+        print("\nRunning ingest stage...")
+        try:
+            meta = run_ingest(args.input, job_dir)
+            status["ingest"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {meta['word_count']} words, source: {meta['source_type']}")
+            if meta["warning"]:
+                print(f"  WARNING: {meta['warning']}")
+        except IngestError as e:
+            status["ingest"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the input and re-run.")
+            return
+    else:
+        print("\nIngest already done, skipping (use --force to redo).")
+
     print("\nStage status:")
     for stage in STAGES:
         print(f"  {stage}: {status[stage]}")
 
-    unimplemented = [s for s in STAGES if status[s] == "pending"]
-    print(f"\nUnimplemented stages (M0 stub — real logic lands in M1+): {unimplemented}")
+    still_pending = [s for s in STAGES if status[s] == "pending"]
+    print(f"\nNot yet implemented (lands in later milestones): {still_pending}")
 
 
 def main():
