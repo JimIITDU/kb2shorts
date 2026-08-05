@@ -1,0 +1,9 @@
+How to Reset Your Router When Your Internet Stops Working
+
+If your internet connection suddenly stops working, the first and most effective troubleshooting step is a full router reset. This clears temporary errors in the router's memory and re-establishes a fresh connection with your internet service provider.
+
+To reset your router, locate the power cable and unplug it directly from the wall outlet. Wait a full 30 seconds before plugging it back in. This waiting period is important because it allows capacitors inside the router to fully discharge, ensuring a true reset rather than a quick reboot.
+
+After plugging the router back in, wait two to three minutes for it to fully boot up. You will typically see the status lights blink and then settle into a steady state, indicating the router has reconnected to your provider's network.
+
+If your internet still is not working after this reset, check whether other devices on your network are also affected. If only one device is affected, the issue is likely with that device rather than the router itself. If all devices are affected, contact your internet service provider, as the issue may be on their end.

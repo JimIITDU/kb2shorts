@@ -1,0 +1,34 @@
+# kb2shorts config — all tunables live here, never in code
+
+language: en   # en | bn
+
+llm:
+  model: "gpt-4o-mini"   # swap providers without touching code
+
+tts:
+  provider: "local"      # local | paid
+  voices:
+    en: "default-en-voice"
+    bn: "default-bn-voice"
+
+video:
+  width: 1080
+  height: 1920
+
+script:
+  min_seconds: 40
+  max_seconds: 60
+  words_per_second:
+    en: 2.5
+    bn: 2.0
+
+captions:
+  style: "pop"           # pop | sweep
+  font:
+    en: "Arial Bold"
+    bn: "Noto Sans Bengali"
+
+align:
+  backend:
+    en: "whisperx"
+    bn: "whisperx-indic"
