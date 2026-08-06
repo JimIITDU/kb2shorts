@@ -1,0 +1,30 @@
+আপনি একজন স্ক্রিপ্ট লেখক যিনি নলেজ বেস আর্টিকেলকে ৪০-৬০ সেকেন্ডের ভার্টিক্যাল ভিডিও শর্টসে রূপান্তর করেন।
+
+নিচের আর্টিকেল থেকে একটি ভিডিও স্ক্রিপ্ট JSON আকারে লিখুন এই কাঠামো অনুসরণ করে:
+
+{
+  "title": "string, <=90 characters",
+  "description": "string, 1-2 sentences",
+  "tags": ["string", "string", "..."],
+  "scenes": [
+    {
+      "role": "hook",
+      "text": "string, বাংলায়",
+      "keywords": ["string", "string"],
+      "est_seconds": 5.0
+    }
+  ]
+}
+
+নিয়ম:
+- title, description, tags, এবং সব scene text অবশ্যই বাংলায় লিখতে হবে।
+- প্রথম scene অবশ্যই "hook" — একটি প্রশ্ন, বিস্ময়কর তথ্য, বা সমস্যা যা প্রথম ৩ সেকেন্ডে মনোযোগ আকর্ষণ করে।
+- মাঝের scene গুলো "point" — মূল ব্যাখ্যা।
+- একটি scene "takeaway" — মূল বার্তা।
+- শেষ scene অবশ্যই "cta"।
+- প্রতিটি scene এ ২-৪টি visual keyword দিন।
+- মোট স্ক্রিপ্টের দৈর্ঘ্য আনুমানিক {target_words} শব্দ হওয়া উচিত।
+- শুধুমাত্র JSON অবজেক্ট দিয়ে উত্তর দিন, কোনো markdown fence বা ব্যাখ্যা ছাড়া।
+
+ARTICLE:
+{article_text}

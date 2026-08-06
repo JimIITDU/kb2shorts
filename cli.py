@@ -9,8 +9,12 @@ import json
 from pathlib import Path
 
 import yaml
+from dotenv import load_dotenv
 
 from pipeline.ingest import run_ingest, IngestError
+from pipeline.script_gen import run_script_gen, ScriptGenError
+
+load_dotenv()
 
 STAGES = ["ingest", "script", "tts", "align", "assets", "captions", "render", "qa", "package"]
 
@@ -30,8 +34,6 @@ def compute_job_id(input_path: str, config_version: str) -> str:
     if p.exists():
         content = p.read_text(encoding="utf-8")
     else:
-        # Treat as a URL — hash the URL string itself for now.
-        # (Real URL fetching happens in M1.)
         content = input_path
     payload = (content + config_version).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()[:12]
@@ -51,7 +53,7 @@ def save_status(job_dir: Path, status: dict):
 
 def cmd_generate(args):
     config = load_config(args.config)
-    config_version = str(config)  # crude version fingerprint for now
+    config_version = str(config)
 
     job_id = compute_job_id(args.input, config_version)
     job_dir = Path("jobs") / job_id
@@ -67,6 +69,7 @@ def cmd_generate(args):
     print(f"Job ID: {job_id}")
     print(f"Job dir: {job_dir}")
 
+    # --- Ingest stage (M1) ---
     if status["ingest"] != "done":
         print("\nRunning ingest stage...")
         try:
@@ -84,6 +87,25 @@ def cmd_generate(args):
             return
     else:
         print("\nIngest already done, skipping (use --force to redo).")
+
+    # --- Script generation stage (M2) ---
+    if status["script"] != "done":
+        print("\nRunning script generation stage...")
+        try:
+            result = run_script_gen(job_dir, config)
+            status["script"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {result['word_count']} words, {result['scenes']} scenes, "
+                  f"{result['attempts']} attempt(s)")
+            print(f"  Token usage: {result['token_usage']}")
+        except ScriptGenError as e:
+            status["script"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the issue and re-run.")
+            return
+    else:
+        print("Script generation already done, skipping (use --force to redo).")
 
     print("\nStage status:")
     for stage in STAGES:

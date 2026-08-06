@@ -3,7 +3,7 @@
 language: en   # en | bn
 
 llm:
-  model: "gpt-4o-mini"   # swap providers without touching code
+  model: "llama-3.3-70b-versatile"  # free tier, no credit card required
 
 tts:
   provider: "local"      # local | paid
