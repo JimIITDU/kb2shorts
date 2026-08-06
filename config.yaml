@@ -6,10 +6,10 @@ llm:
   model: "llama-3.3-70b-versatile"  # free tier, no credit card required
 
 tts:
-  provider: "local"      # local | paid
+  provider: "edge-tts"
   voices:
-    en: "default-en-voice"
-    bn: "default-bn-voice"
+    en: "en-US-AriaNeural"
+    bn: "bn-BD-NabanitaNeural"
 
 video:
   width: 1080
@@ -32,3 +32,5 @@ align:
   backend:
     en: "whisperx"
     bn: "whisperx-indic"
+
+

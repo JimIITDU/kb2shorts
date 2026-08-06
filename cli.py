@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 
 from pipeline.ingest import run_ingest, IngestError
 from pipeline.script_gen import run_script_gen, ScriptGenError
+from pipeline.tts import run_voice_gen, VoiceGenError
 
 load_dotenv()
 
@@ -106,6 +107,23 @@ def cmd_generate(args):
             return
     else:
         print("Script generation already done, skipping (use --force to redo).")
+
+    # --- Voice generation stage (M3) ---
+    if status["tts"] != "done":
+        print("\nRunning voice generation stage...")
+        try:
+            result = run_voice_gen(job_dir, config)
+            status["tts"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {result['duration_seconds']}s audio, voice: {result['voice']}")
+        except VoiceGenError as e:
+            status["tts"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the issue and re-run.")
+            return
+    else:
+        print("Voice generation already done, skipping (use --force to redo).")
 
     print("\nStage status:")
     for stage in STAGES:
