@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from pipeline.ingest import run_ingest, IngestError
 from pipeline.script_gen import run_script_gen, ScriptGenError
 from pipeline.tts import run_voice_gen, VoiceGenError
+from pipeline.align import run_alignment, AlignError
 
 load_dotenv()
 
@@ -124,6 +125,25 @@ def cmd_generate(args):
             return
     else:
         print("Voice generation already done, skipping (use --force to redo).")
+
+    # --- Alignment stage (M4) ---
+    if status["align"] != "done":
+        print("\nRunning alignment stage...")
+        try:
+            result = run_alignment(job_dir, config)
+            status["align"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {result['word_count']} words aligned, "
+                  f"last word ends {result['last_word_end']}s "
+                  f"(audio is {result['audio_duration']}s)")
+        except AlignError as e:
+            status["align"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the issue and re-run.")
+            return
+    else:
+        print("Alignment already done, skipping (use --force to redo).")
 
     print("\nStage status:")
     for stage in STAGES:
