@@ -15,6 +15,10 @@ from pipeline.ingest import run_ingest, IngestError
 from pipeline.script_gen import run_script_gen, ScriptGenError
 from pipeline.tts import run_voice_gen, VoiceGenError
 from pipeline.align import run_alignment, AlignError
+from pipeline.assets import run_assets, AssetsError
+# from pipeline.captions import run_captions, CaptionsError
+# from pipeline.render import run_render, RenderError
+# from pipeline.qa import run_qa, QaError
 
 load_dotenv()
 
@@ -146,6 +150,23 @@ def cmd_generate(args):
         print("Alignment already done, skipping (use --force to redo).")
 
     print("\nStage status:")
+    # --- Assets stage (M5) ---
+    if status["assets"] != "done":
+        print("\nRunning assets stage...")
+        try:
+            result = run_assets(job_dir, config)
+            status["assets"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {result['cache_hits']} cache hits, {result['pexels_hits']} Pexels, "
+                  f"{result['gradient_fallbacks']} gradient fallbacks")
+        except AssetsError as e:
+            status["assets"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the issue and re-run.")
+            return
+    else:
+        print("Assets already done, skipping (use --force to redo).")
     for stage in STAGES:
         print(f"  {stage}: {status[stage]}")
 
