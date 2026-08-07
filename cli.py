@@ -16,7 +16,7 @@ from pipeline.script_gen import run_script_gen, ScriptGenError
 from pipeline.tts import run_voice_gen, VoiceGenError
 from pipeline.align import run_alignment, AlignError
 from pipeline.assets import run_assets, AssetsError
-# from pipeline.captions import run_captions, CaptionsError
+from pipeline.captions import run_captions, CaptionsError
 # from pipeline.render import run_render, RenderError
 # from pipeline.qa import run_qa, QaError
 
@@ -149,7 +149,6 @@ def cmd_generate(args):
     else:
         print("Alignment already done, skipping (use --force to redo).")
 
-    print("\nStage status:")
     # --- Assets stage (M5) ---
     if status["assets"] != "done":
         print("\nRunning assets stage...")
@@ -167,6 +166,25 @@ def cmd_generate(args):
             return
     else:
         print("Assets already done, skipping (use --force to redo).")
+
+    # --- Captions stage (M6) ---
+    if status["captions"] != "done":
+        print("\nRunning captions stage...")
+        try:
+            result = run_captions(job_dir, config)
+            status["captions"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {result['line_count']} caption lines, style: {result['style']}")
+        except CaptionsError as e:
+            status["captions"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the issue and re-run.")
+            return
+    else:
+        print("Captions already done, skipping (use --force to redo).")
+
+    print("\nStage status:")
     for stage in STAGES:
         print(f"  {stage}: {status[stage]}")
 

@@ -23,7 +23,7 @@ script:
     bn: 2.0
 
 captions:
-  style: "pop"           # pop | sweep
+  style: "sweep"          # pop | sweep
   font:
     en: "Arial Bold"
     bn: "Noto Sans Bengali"
