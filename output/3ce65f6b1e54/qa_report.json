@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "duration",
+      "passed": true,
+      "detail": "52.20s (need 35-62s)"
+    },
+    {
+      "name": "video_format",
+      "passed": true,
+      "detail": "1080x1920 h264 yuv420p"
+    },
+    {
+      "name": "loudness",
+      "passed": true,
+      "detail": "-14.41 LUFS (need -14±1)"
+    },
+    {
+      "name": "not_frozen",
+      "passed": true,
+      "detail": "sampled frames differ across the timeline"
+    },
+    {
+      "name": "captions_cover_timing",
+      "passed": true,
+      "detail": "all sampled word timestamps fall inside a caption line"
+    },
+    {
+      "name": "plays_fully",
+      "passed": true,
+      "detail": "decoded end-to-end without errors"
+    }
+  ]
+}

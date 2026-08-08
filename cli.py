@@ -18,7 +18,8 @@ from pipeline.align import run_alignment, AlignError
 from pipeline.assets import run_assets, AssetsError
 from pipeline.captions import run_captions, CaptionsError
 from pipeline.render import run_render, RenderError
-# from pipeline.qa import run_qa, QaError
+from pipeline.qa import run_qa, QaError
+from pipeline.package import run_package, PackageError
 
 load_dotenv()
 
@@ -202,12 +203,59 @@ def cmd_generate(args):
     else:
         print("Render already done, skipping (use --force to redo).")
 
+    # --- QA gate stage (M8) ---
+    if status["qa"] != "done":
+        print("\nRunning QA gate...")
+        try:
+            result = run_qa(job_dir, config)
+            status["qa"] = "done"
+            save_status(job_dir, status)
+            print("  QA VERDICT: PASSED")
+            for check in result["checks"]:
+                print(f"    \u2713 {check['name']}: {check['detail']}")
+        except QaError as e:
+            status["qa"] = "failed"
+            save_status(job_dir, status)
+            print("  QA VERDICT: FAILED")
+            print(f"  {e}")
+            report_path = job_dir / "qa_report.json"
+            if report_path.exists():
+                report = json.loads(report_path.read_text(encoding="utf-8"))
+                for check in report["checks"]:
+                    mark = "\u2713" if check["passed"] else "\u2717"
+                    print(f"    {mark} {check['name']}: {check['detail']}")
+            print("\nStopping — packaging refuses to run on a failing job.")
+            return
+    else:
+        print("QA gate already done, skipping (use --force to redo).")
+
+    # --- Package stage (M8) ---
+    if status["package"] != "done":
+        print("\nRunning package stage...")
+        try:
+            result = run_package(job_dir, config)
+            status["package"] = "done"
+            save_status(job_dir, status)
+            print(f"  OK — {result['output_dir']}")
+            print(f"  Files: {result['files']}")
+        except PackageError as e:
+            status["package"] = "failed"
+            save_status(job_dir, status)
+            print(f"  FAILED: {e}")
+            print("\nStopping — fix the issue and re-run.")
+            return
+    else:
+        print("Package already done, skipping (use --force to redo).")
+
     print("\nStage status:")
     for stage in STAGES:
         print(f"  {stage}: {status[stage]}")
 
     still_pending = [s for s in STAGES if status[s] == "pending"]
-    print(f"\nNot yet implemented (lands in later milestones): {still_pending}")
+    if still_pending:
+        print(f"\nNot yet implemented (lands in later milestones): {still_pending}")
+    else:
+        print("\nAll stages complete — check output/<job_id>/ for the final deliverable.")
 
 
 def main():

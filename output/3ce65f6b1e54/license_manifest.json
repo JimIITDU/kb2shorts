@@ -1,0 +1,59 @@
+{
+  "assets": [
+    {
+      "scene_index": 0,
+      "asset_path": "assets_cache\\74c95604043427f0.mp4",
+      "license_record": {
+        "keyword": "router",
+        "source": "pexels",
+        "source_url": "https://www.pexels.com/video/a-boy-playing-on-a-tablet-while-a-girl-is-writing-on-a-paper-6436526/",
+        "author": "Marta Wave",
+        "license": "Pexels License (free to use, no attribution required)"
+      }
+    },
+    {
+      "scene_index": 1,
+      "asset_path": "assets_cache\\b854ba307072c052.mp4",
+      "license_record": {
+        "keyword": "power cable",
+        "source": "pexels",
+        "source_url": "https://www.pexels.com/video/an-electric-car-charging-9790183/",
+        "author": "Kindel Media",
+        "license": "Pexels License (free to use, no attribution required)"
+      }
+    },
+    {
+      "scene_index": 2,
+      "asset_path": "assets_cache\\5e4ce07bd5e639a1.mp4",
+      "license_record": {
+        "keyword": "status lights",
+        "source": "pexels",
+        "source_url": "https://www.pexels.com/video/realistic-animal-figurines-hanging-display-38908059/",
+        "author": "eQzit",
+        "license": "Pexels License (free to use, no attribution required)"
+      }
+    },
+    {
+      "scene_index": 3,
+      "asset_path": "assets_cache\\c8bdaf90ccf79972.mp4",
+      "license_record": {
+        "keyword": "network devices",
+        "source": "pexels",
+        "source_url": "https://www.pexels.com/video/a-person-putting-a-watch-on-a-person-s-wrist-9794864/",
+        "author": "Ron Lach",
+        "license": "Pexels License (free to use, no attribution required)"
+      }
+    },
+    {
+      "scene_index": 4,
+      "asset_path": "assets_cache\\e6d17a0459eeb588.mp4",
+      "license_record": {
+        "keyword": "tech tips",
+        "source": "pexels",
+        "source_url": "https://www.pexels.com/video/modern-home-office-with-gadgets-and-monitor-36807132/",
+        "author": "thiago japyassu",
+        "license": "Pexels License (free to use, no attribution required)"
+      }
+    }
+  ]
+}
